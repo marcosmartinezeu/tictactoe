@@ -1,0 +1,24 @@
+{
+  "name": "tic tac toe",
+  "authors": [
+    "Marcos Martínez <marcos.martinez.muniz@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/assets/vendor/",
+    "test",
+    "tests"
+  ],
+  "directory" : "public/assets/vendor/",
+  "dependencies": {
+    "twbs/bootstrap": "^3.0",
+    "components-font-awesome": "^5.0"
+  }
+}

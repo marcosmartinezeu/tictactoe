@@ -1,0 +1,20 @@
+version: "2"
+
+services:
+    apache:
+        build: docker/apache
+        hostname: tictactoe.local
+        environment:
+            - VIRTUAL_HOST=tictactoe.local
+        expose:
+            - "7000"
+        ports:
+            - "7000:80"
+        volumes:
+            - ./:/var/www/html
+        links:
+            - php7
+    php7:
+        build: docker/php
+        volumes:
+            - ./:/var/www

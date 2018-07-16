@@ -1,0 +1,17 @@
+table {
+    width: 100%;
+    margin: 0 auto;
+    table-layout: fixed;
+}
+table tr td {
+    height: 250px;
+    border-top: 1px solid #c3c3c3;
+    border-right: 1px solid #c3c3c3;
+    width: auto;
+}
+table tr:first-child td {
+    border-top: none;
+}
+table tr td:last-child {
+    border-right: none;
+}
