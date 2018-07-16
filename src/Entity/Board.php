@@ -8,6 +8,8 @@ namespace App\Entity;
  */
 class Board
 {
+    const BOARD_SIZE = 9;
+
     /**
      * @var  Move[]
      */
@@ -18,9 +20,15 @@ class Board
      */
     private $finished;
 
+    /**
+     * @var string
+     */
+    private $id;
+
     public function __construct(Array $moves)
     {
         $this->moves = $moves;
+        $this->id = '';
     }
 
     /**
@@ -62,9 +70,38 @@ class Board
 
     /**
      * @param bool $finished
+     *
+     * @return Board
      */
-    public function setFinished(bool $finished)
+    public function setFinished(bool $finished) : Board
     {
         $this->finished = $finished;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return $this
+     */
+    public function setId(string $id) : Board
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getState()
+    {
+
     }
 }
