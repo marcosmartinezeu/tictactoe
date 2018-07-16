@@ -20,6 +20,14 @@ class BoardFactory
         // 1 win
         // Move not possible
 
+        /**
+         * @todo get possible movements method
+         * @todo create aux class with win possible movements
+         * @todo create method to get possible win movements
+         * @todo create move validaor
+         * @todo create render board from moves: an array with 9 elements
+         */
+
         return $board;
     }
 
