@@ -6,6 +6,7 @@ use App\Entity\Board;
 use App\Entity\Move;
 use App\Factory\BoardFactory;
 use App\Factory\MoveFactory;
+use App\Service\MoveService;
 use App\Validator\RequestValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,7 +23,7 @@ class TicTacToeController extends Controller
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -30,15 +31,25 @@ class TicTacToeController extends Controller
         $content = $request->getContent();
         $requestValidator = new RequestValidator();
 
-        $board = (false === $requestValidator->isValid($content))
-            ? BoardFactory::createNewBoard() // New game
-            : BoardFactory::createBoardFromRequestContent($content); // Show current game
+        // New game
+        if (true === $requestValidator->isValid($content))
+        {
+            $board = BoardFactory::createNewBoard();
+            // Random first player
+            if (rand(0, 1) === 1)
+            {
+                // Bot stars
+                $moveService = new MoveService($board);
+                $nextMove = $moveService->play(Move::CHAR_COMPUTER_PLAYER);
+                $board->addMove($nextMove);
+            }
+        }
+        else // Show current game
+        {
+            $board = BoardFactory::createBoardFromRequestContent($content);
+        }
 
-        // Ramdom new move
-        $board->addMove(MoveFactory::create(Move::CHAR_COMPUTER_PLAYER, 3));
-
-        return $this->buildResponse($board);
-        //return $this->render('tic-tac-toe/index.html.twig');
+        return $this->render('tic-tac-toe/index.html.twig');
     }
 
     /**
@@ -76,7 +87,7 @@ class TicTacToeController extends Controller
             'nextMove' => [],
             'history' => $board->getHistory(),
             'gameResult' => $board->getResult(),
-            'customField2' => '',
+            'winner' => ($board->getResult() == Board::RESULT_WIN) ? $board->getWinner() : '',
             'customField3' => ''
         ];
 
