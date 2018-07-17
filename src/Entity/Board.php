@@ -10,6 +10,9 @@ class Board
 {
     const BOARD_SIZE = 9;
 
+    const RESULT_TIE = 'tie';
+    const RESULT_WIN = 'win';
+
     /**
      * @var  Move[]
      */
@@ -151,10 +154,119 @@ class Board
     }
 
     /**
+     * @return array
+     */
+    public function getMovesFromPlayer($player) : array
+    {
+        $playerMoves = [];
+
+        foreach($this->getMoves() as $move)
+        {
+            if($move->getChar() == $player)
+            {
+                $playerMoves[] = $move->getPosition();
+            }
+        }
+
+        return $playerMoves;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPossibleMoves() : array
+    {
+        $posibleMoves = [];
+        for($position = 0; $position < Board::BOARD_SIZE; $position++)
+        {
+            if(!in_array($position, $this->getMovesFromPlayer(Move::CHAR_COMPUTER_PLAYER))
+               && !in_array($position, $this->getMovesFromPlayer(Move::CHAR_HUMAN_PLAYER))
+            )
+            {
+                $posibleMoves[] = $position;
+            }
+        }
+
+        return $posibleMoves;
+    }
+
+    /**
+     * Returns posible winner combinations
+     *
+     * @return array
+     */
+    public function getWinnerCombinations() : array
+    {
+        return [
+            [0, 4, 8],
+            [2, 4, 6],
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8]
+        ];
+
+    }
+
+
+    /**
+     * @param string $player
+     *
+     * @return bool
+     */
+    protected function isPlayerWinner($player)
+    {
+        $isWinner = false;
+        $playerMoves = $this->getMovesFromPlayer($player);
+        foreach($this->getWinnerCombinations() as $winnerCombination)
+        {
+            if (count(array_diff($winnerCombination, $playerMoves)) === 0)
+            {
+                $isWinner = true;
+                break;
+            }
+        }
+        return $isWinner;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getWinner()
+    {
+        $winner = null;
+
+        if ($this->isPlayerWinner(Move::CHAR_HUMAN_PLAYER))
+        {
+            $winner = Move::CHAR_HUMAN_PLAYER;
+        }
+        elseif ($this->isPlayerWinner(Move::CHAR_COMPUTER_PLAYER))
+        {
+            $winner = Move::CHAR_COMPUTER_PLAYER;
+        }
+
+        return $winner;
+    }
+
+    /**
      * @return bool
      */
     public function getResult()
     {
-        return false;
+        if ($this->getPossibleMoves() === 0)
+        {
+            $result = self:: RESULT_TIE;
+        }
+        elseif (!is_null($this->getWinner()))
+        {
+            $result = self::RESULT_WIN;
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
     }
 }
