@@ -9,8 +9,8 @@ namespace App\Entity;
 class Move
 {
     const CHAR_EMPTY = '-';
-    const CHAR_HUMAN_PLAYER = 'O';
-    const CHAR_COMPUTER_PLAYER = 'X';
+    const CHAR_HUMAN_PLAYER = 'o';
+    const CHAR_COMPUTER_PLAYER = 'x';
 
     /**
      * @var string
