@@ -143,12 +143,9 @@ class Board
     public function getHistory()
     {
         $history = [];
-        $historyCounter = 0;
         foreach ($this->getMoves() as $move)
         {
-            $history[$historyCounter]['char'] = $move->getChar();
-            $history[$historyCounter]['position'] = $move->getPosition();
-            $historyCounter ++;
+            $history[] = $move->toArray();
         }
         return $history;
     }

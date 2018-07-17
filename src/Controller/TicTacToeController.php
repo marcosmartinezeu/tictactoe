@@ -43,8 +43,6 @@ class TicTacToeController extends Controller
                 $nextMove = $moveService->play(Move::CHAR_COMPUTER_PLAYER);
                 $board->addMove($nextMove);
             }
-            return $this->buildResponse($board, $nextMove);
-
         }
         else // Show current game
         {
@@ -83,7 +81,7 @@ class TicTacToeController extends Controller
 
     /**
      * @param Board $board
-     * @param null $nextMove
+     * @param null|Move $nextMove
      *
      * @return JsonResponse
      */
@@ -92,8 +90,8 @@ class TicTacToeController extends Controller
         $response = [
             'matchId' => $board->getId(),
             'boardState' => $board->getState(),
-            'nextMove' => $nextMove,
-            'history' => $board->getMoves(),
+            'nextMove' => $nextMove->toArray(),
+            'history' => $board->getHistory(),
             'gameResult' => $board->getResult(),
             'winner' => ($board->getResult() == Board::RESULT_WIN) ? $board->getWinner() : '',
             'customField3' => ''

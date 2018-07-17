@@ -66,14 +66,14 @@ class Move
         return $this;
     }
 
-    public function __toString()
+    /**
+     * @return array
+     */
+    public function toArray()
     {
-        return 'lalala';
+        return [
+            'char' => $this->getChar(),
+            'position' => $this->getPosition()
+        ];
     }
-
-
-    public function toString()
-    {
-    }
-
 }
