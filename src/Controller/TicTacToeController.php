@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Board;
 use App\Entity\Move;
 use App\Factory\BoardFactory;
-use App\Factory\MoveFactory;
 use App\Service\MoveService;
 use App\Validator\RequestValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -32,9 +31,10 @@ class TicTacToeController extends Controller
         $requestValidator = new RequestValidator();
 
         // New game
-        if (true === $requestValidator->isValid($content))
+        if (false === $requestValidator->isValid($content))
         {
             $board = BoardFactory::createNewBoard();
+
             // Random first player
             if (rand(0, 1) === 1)
             {
