@@ -1,23 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-center">Tic Tac Toe</h1>
-
-    <table>
-        <tr>
-            <td data-position="0" data-value=""></td>
-            <td data-position="1" data-value=""></td>
-            <td data-position="2" data-value=""></td>
-        </tr>
-        <tr>
-            <td data-position="3" data-value=""></td>
-            <td data-position="4" data-value=""></td>
-            <td data-position="5" data-value=""></td>
-        </tr>
-        <tr>
-            <td data-position="6" data-value=""></td>
-            <td data-position="7" data-value=""></td>
-            <td data-position="8" data-value=""></td>
-        </tr>
-    </table>
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center">Tic Tac Toe</h1>
+            <table>
+                <tr>
+                    <td data-position="0" data-value=""></td>
+                    <td data-position="1" data-value=""></td>
+                    <td data-position="2" data-value=""></td>
+                </tr>
+                <tr>
+                    <td data-position="3" data-value=""></td>
+                    <td data-position="4" data-value=""></td>
+                    <td data-position="5" data-value=""></td>
+                </tr>
+                <tr>
+                    <td data-position="6" data-value=""></td>
+                    <td data-position="7" data-value=""></td>
+                    <td data-position="8" data-value=""></td>
+                </tr>
+            </table>
+        </div>
+    </div>
 {% endblock %}

@@ -66,5 +66,14 @@ class Move
         return $this;
     }
 
+    public function __toString()
+    {
+        return 'lalala';
+    }
+
+
+    public function toString()
+    {
+    }
 
 }
