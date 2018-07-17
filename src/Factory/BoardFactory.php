@@ -14,7 +14,7 @@ class BoardFactory
      */
     public static function createBoardFromRequestContent($content)
     {
-        $body = json_decode($content, true);
+        $body = json_decode($content);
         $board = new Board(MoveFactory::loadMovesFromHistory($body->history), $body->matchId);
 
         return $board;
