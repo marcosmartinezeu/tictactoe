@@ -4,29 +4,28 @@ namespace App\Factory;
 
 
 use App\Entity\Board;
-use App\Entity\Move;
 
 class BoardFactory
 {
     /**
-     * @param Move[] $moves
+     * @param string $content
+     *
      * @return Board
      */
-    public static function create(Array $moves)
+    public static function createBoardFromRequestContent($content)
     {
-        $board = new Board($moves);
+        $body = json_decode($content, true);
+        $board = new Board(MoveFactory::loadMovesFromHistory($body->history), $body->matchId);
 
-        // Check if finished
-        // 1 win
-        // Move not possible
+        return $board;
+    }
 
-        /**
-         * @todo get possible movements method
-         * @todo create aux class with win possible movements
-         * @todo create method to get possible win movements
-         * @todo create move validaor
-         * @todo create render board from moves: an array with 9 elements
-         */
+    /**
+     * @return Board
+     */
+    public static function createNewBoard()
+    {
+        $board = new Board([], md5(uniqid()));
 
         return $board;
     }

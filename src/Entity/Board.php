@@ -25,20 +25,39 @@ class Board
      */
     private $id;
 
-    public function __construct(Array $moves)
+    /**
+     * Board constructor.
+     * @param array $moves
+     * @param string $id
+     */
+    public function __construct(Array $moves, string $id)
     {
         $this->moves = $moves;
-        $this->id = '';
+        $this->id = $id;
     }
 
     /**
      * @return Move[]
      */
-    public function getMoves(): array
+    public function getMoves() : array
     {
         return $this->moves;
     }
 
+    /**
+     * @return array
+     */
+    public function getMovesByPostion() : array
+    {
+        $movesByPosition = [];
+
+        foreach ($this->getMoves() as $move)
+        {
+            $movesByPosition[$move->getPosition()] = $move->getChar();
+        }
+
+        return $movesByPosition;
+    }
     /**
      * @param Move[] $moves
      * @return Board
@@ -100,8 +119,42 @@ class Board
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getState()
     {
+        $state = [];
+        $moves = $this->getMovesByPostion();
+        for ($position = 0; $position < self::BOARD_SIZE; $position ++)
+        {
+            $state[] = (isset($moves[$position])) ? $moves[$position] : Move::CHAR_EMPTY;
+        }
 
+        return $state;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHistory()
+    {
+        $history = [];
+        $historyCounter = 0;
+        foreach ($this->getMoves() as $move)
+        {
+            $history[$historyCounter]['char'] = $move->getChar();
+            $history[$historyCounter]['position'] = $move->getPosition();
+            $historyCounter ++;
+        }
+        return $history;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getResult()
+    {
+        return false;
     }
 }
