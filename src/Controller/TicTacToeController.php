@@ -5,20 +5,19 @@ namespace App\Controller;
 use App\Entity\Board;
 use App\Entity\Move;
 use App\Factory\BoardFactory;
+use App\Factory\MoveFactory;
 use App\Service\MoveService;
 use App\Validator\RequestValidator;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class TicTacToeController extends Controller
 {
     /**
-     * @Route("/api/tic-tac-toe/play", name="tic_tac_toe")
-     * @Method("GET")
+     * @Route("/api/tic-tac-toe/play", methods="GET", name="play")
      *
      * @param Request $request
      *
@@ -48,13 +47,11 @@ class TicTacToeController extends Controller
         {
             $board = BoardFactory::createBoardFromRequestContent($content);
         }
-
-        return $this->render('tic-tac-toe/index.html.twig');
+        return $this->render('tic-tac-toe/index.html.twig', ['matchId' => $board->getId(), 'state' => $board->getState()]);
     }
 
     /**
-     * @Route("/api/tic-tac-toe/play", name="tic_tac_toe_move")
-     * @Method("POST")
+     * @Route("/api/tic-tac-toe/play", methods="POST", name="move")
      *
      * @param Request $request
      *
@@ -65,17 +62,22 @@ class TicTacToeController extends Controller
     {
         $content = $request->getContent();
         $requestValidator = new RequestValidator();
+        $board = BoardFactory::createBoardFromRequestContent($content);
 
-        // Create board
-        $board = (true === $requestValidator->isValid($content))
-            ? BoardFactory::createNewBoard() // New game
-            : BoardFactory::createBoardFromRequestContent($content);
+        // Make human move
+        $board->addMove(MoveFactory::loadMoveFromRequestContent($content));
 
-        // Make move
+        // Make BOT move
+        if ($board->getResult() === false) {
+            $moveService = new MoveService($board);
+            $nextMove = $moveService->play(Move::CHAR_COMPUTER_PLAYER);
+            $board->addMove($nextMove);
+        }
+        else{
+            $nextMove = null;
+        }
 
-        // Update board
-
-        return $this->buildResponse($board);
+        return $this->buildResponse($board, $nextMove);
 
     }
 
@@ -90,11 +92,11 @@ class TicTacToeController extends Controller
         $response = [
             'matchId' => $board->getId(),
             'boardState' => $board->getState(),
-            'nextMove' => $nextMove->toArray(),
+            'nextMove' => (!is_null($nextMove)) ? $nextMove->toArray() : '',
             'history' => $board->getHistory(),
             'gameResult' => $board->getResult(),
             'winner' => ($board->getResult() == Board::RESULT_WIN) ? $board->getWinner() : '',
-            'customField3' => ''
+            'isFinished' => $board->isFinished()
         ];
 
         return new JsonResponse($response, Response::HTTP_OK);

@@ -21,7 +21,7 @@ class Board
     /**
      * @var bool
      */
-    private $finished;
+    private $finished = false;
 
     /**
      * @var string
@@ -252,7 +252,7 @@ class Board
      */
     public function getResult()
     {
-        if ($this->getPossibleMoves() === 0)
+        if (count($this->getPossibleMoves()) === 0)
         {
             $result = self:: RESULT_TIE;
             $this->setFinished(true);

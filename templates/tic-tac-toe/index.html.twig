@@ -4,23 +4,31 @@
     <div class="row">
         <div class="col-md-12">
             <h1 class="text-center">Tic Tac Toe</h1>
-            <table>
+            <table id="{{ matchId }}">
                 <tr>
-                    <td data-position="0" data-value=""></td>
-                    <td data-position="1" data-value=""></td>
-                    <td data-position="2" data-value=""></td>
+                    {%  for i in 0..2 %}
+                    <td data-position="{{ i }}" data-value="{{ state[i] }}"></td>
+                    {%  endfor %}
                 </tr>
                 <tr>
-                    <td data-position="3" data-value=""></td>
-                    <td data-position="4" data-value=""></td>
-                    <td data-position="5" data-value=""></td>
+                    {%  for i in 3..5 %}
+                        <td data-position="{{ i }}" data-value="{{ state[i] }}"></td>
+                    {%  endfor %}
                 </tr>
                 <tr>
-                    <td data-position="6" data-value=""></td>
-                    <td data-position="7" data-value=""></td>
-                    <td data-position="8" data-value=""></td>
+                    {%  for i in 6..8 %}
+                        <td data-position="{{ i }}" data-value="{{ state[i] }}"></td>
+                    {%  endfor %}
                 </tr>
             </table>
+        </div>
+    </div>
+
+    <div id="result-container" class="row hide">
+        <div class="col-md-4">
+            <h2>Game over</h2>
+            <div id="result"></div>
+            <div id="winner" class="hide"></div>
         </div>
     </div>
 {% endblock %}

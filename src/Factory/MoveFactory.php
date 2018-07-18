@@ -30,4 +30,11 @@ class MoveFactory
         }
         return $moves;
     }
+
+    public static function loadMoveFromRequestContent($content)
+    {
+        $body = json_decode($content);
+
+        return new Move($body->nextMove->char, $body->nextMove->position);
+    }
 }

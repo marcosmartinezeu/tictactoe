@@ -1,55 +1,133 @@
-var service = {
-    callAPI: function (boardState) {
-        var playerUnit = "X";
-        $.ajax({
-                   url: "api/move",
-                   method: "POST",
-                   data: JSON.stringify({
-                                            playerUnit: playerUnit,
-                                            boardState: boardState
-                                        }),
-                   processData: false,
-                   contentType: 'application/json'
-               }).done(function (data) {
-            if (data.winner) {
-                if (data.winner.unit == playerUnit) {
-                    service.markWinnerMoves(data.winner.moves, 'bg-success');
-                    service.finish("alert-success", "Well done! You are the winner!");
-                    return;
-                } else {
-                    service.markWinnerMoves(data.winner.moves, 'bg-danger');
-                    service.finish("alert-danger", "You lose!");
-                    service.markBotMove(data.nextMove[0], data.nextMove[1], data.nextMove[2]);
-                    return;
-                }
+var boardState = [];
+var moveHistory = [];
+var nextMove = {};
+var isFinished = false;
+var result = false;
+var winner = '';
+
+var callApi = function () {
+    var playerUnit = "X";
+    $.ajax({
+        url: "play",
+        method: "POST",
+        data: JSON.stringify({
+            matchId: $('table').attr('id'),
+            boardState: boardState,
+            nextMove: nextMove,
+            history: moveHistory,
+            result: result,
+            winner: winner,
+            isFinished: isFinished
+        }),
+        processData: false,
+        contentType: 'application/json'
+    }).done(function (data) {
+        // Check matchId
+
+        // loadInfoFromResponse
+        loadInfoFromResponse(data);
+
+        // Make new move
+        makeNewMove(data.nextMove);
+
+    });
+};
+
+var renderTable = function(){
+    $("td").each(function () {
+        if ($(this).data('value') == 'x') {
+            $(this).html("<i class='fa fa-times fa-5x'></i>");
+        }
+
+        if ($(this).data('value') == 'o') {
+            $(this).html("<i class='far fa-circle fa-5x'></i>");
+        }
+
+    });
+
+    if (isFinished == true) {
+        $('#result-container').removeClass('hide');
+        $('#result').html(result);
+        if (result != 'tie') {
+            $('#winner').removeClass('hide');
+            if (winner == 'o') {
+                $('#winner').html('HUMAN')
             }
 
-            if (data.tied) {
-                service.finish("alert-info", "Tied! best of three?!");
+            if (winner == 'x') {
+                $('#winner').html('MACHINE')
             }
 
-            service.markBotMove(data.nextMove[0], data.nextMove[1], data.nextMove[2]);
-        });
-    },
-    finish: function(alertType, message) {
-        $("#winner").addClass(alertType).html(message);
-        $("table").data("finished", true);
-    },
-    markBotMove: function(x, y, unit) {
-        var tableElement = $("td").filter('[data-x=' + x + ']').filter('[data-y=' + y + ']');
-        tableElement.data("unit", unit);
-        tableElement.html("<i class='fa fa-circle-o fa-5x'></i>");
-    },
-    markWinnerMoves: function(winnerMoves, bgClass) {
-        $.each(winnerMoves, function(key, val) {
-            $("td").filter('[data-x=' + val[0] + ']').filter('[data-y=' + val[1] + ']').addClass(bgClass);
-        });
+
+        }
+
+    }
+};
+var updateTable = function() {
+    $("td").each(function () {
+        $(this).data('value', boardState[$(this).data('position')]);
+    });
+    renderTable();
+};
+var loadInfoFromResponse = function(response) {
+    boardState = response.boardState;
+    moveHistory = response.history;
+    nextMove = {};
+    isFinished = response.isFinished;
+    result = response.result;
+    winner = response.winner;
+    updateTable();
+};
+
+var makeNewMove = function(nextMove){
+    moveHistory.push(nextMove);
+    boardState[nextMove.position] = nextMove.char;
+    updateTable();
+};
+
+var updateBoardState =  function() {
+    $("td").each(function () {
+        boardState[$(this).data('position')] = $(this).data('value');
+    });
+};
+
+var addMoveToHistory = function (char, position) {
+    moveHistory.push({'char': char, 'position': position});
+};
+
+var setNextMove = function (char, position) {
+    nextMove = {'char': char, 'position': position};
+};
+
+var updateHistoryResponse =  function() {
+    updateBoardState();
+    boardState.forEach(function(char, position){
+        if (char == 'x' || char == 'o') {
+            addMoveToHistory(char, position);
+        }
+    });
+};
+
+var init = function() {
+    initEvents();
+    renderTable();
+    updateBoardState();
+    updateHistoryResponse();
+};
+
+var initEvents = function () {
+    $("td").on("click", clickBoard);
+};
+
+var clickBoard = function() {
+    if (isFinished === false) {
+        $(this).html("<i class='far fa-circle fa-5x'></i>");
+        $(this).data("value", "o");
+        setNextMove($(this).data('value'), $(this).data('position'));
+        callApi();
     }
 };
 
-$("td").on("click", function () {
-    $(this).html("<i class='fa fa-times fa-5x'></i>");
-    $(this).data("value", "x");
-
-    //service.callAPI(boardState);
+$(document).ready(function(){
+    init();
 });

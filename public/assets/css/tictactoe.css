@@ -16,3 +16,7 @@ table tr:first-child td {
 table tr td:last-child {
     border-right: none;
 }
+
+#result-container {
+    background: #c3c3c3;
+}
