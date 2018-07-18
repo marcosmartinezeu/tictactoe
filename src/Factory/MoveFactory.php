@@ -33,8 +33,6 @@ class MoveFactory
 
     public static function loadMoveFromRequestContent($content)
     {
-        $body = json_decode($content);
-
-        return new Move($body->nextMove->char, $body->nextMove->position);
+        return new Move($content->nextMove->char, $content->nextMove->position);
     }
 }

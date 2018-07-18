@@ -6,36 +6,51 @@ var gameResult = false;
 var winner = '';
 
 var callApi = function () {
-    var playerUnit = "X";
-    $.ajax({
-        url: "play",
-        method: "POST",
-        data: JSON.stringify({
+    var request = {};
+    if (moveHistory.length > 0 || jQuery.isEmptyObject(nextMove) === false)
+    {
+        request = {
             matchId: $('table').attr('id'),
             boardState: boardState,
-            nextMove: nextMove,
             history: moveHistory,
             gameResult: gameResult,
             winner: winner,
             isFinished: isFinished
-        }),
+        };
+        if (jQuery.isEmptyObject(nextMove) === false)
+        {
+            request.nextMove = nextMove;
+        }
+    }
+
+    // Block click events while POST
+
+
+    $.ajax({
+        url: 'play',
+        method: 'POST',
+        data: JSON.stringify(request),
         processData: false,
         contentType: 'application/json'
     }).done(function (data) {
-        // Check matchId
-        if (data.matchId != $('table').attr('id')) {
-            // Error
-            isFinished = true;
-            gameResult = 'error';
-            showMessage('Error', 'Server error: matchId different')
+        if (data.error == true) {
 
         }
-        // loadInfoFromResponse
-        loadInfoFromResponse(data);
-
-        // Make new move
-        makeNewMove(data.nextMove);
-
+        else
+        {
+            // Check matchId
+            if(data.matchId != $('table').attr('id'))
+            {
+                // Error
+                isFinished = true;
+                gameResult = 'error';
+                showMessage('Error', 'Not valid matchId');
+            }
+            // loadInfoFromResponse
+            loadInfoFromResponse(data);
+            updateTable();
+        }
+        initEvents();
     });
 };
 
@@ -80,8 +95,8 @@ var loadInfoFromResponse = function(response) {
     updateTable();
 };
 
-var makeNewMove = function(nextMove){
-    moveHistory.push(nextMove);
+var makeMove = function(char, position){
+    moveHistory.push({'char': char, 'position': position});
     boardState[nextMove.position] = nextMove.char;
     updateTable();
 };
@@ -118,9 +133,16 @@ var showMessage = function(title, text) {
 // Init
 var init = function() {
     initEvents();
+
     renderTable();
     updateBoardState();
     updateHistoryResponse();
+    if ((Math.floor(Math.random() * 2) + 1) == 1)
+    {
+        makeMove('x', 4); // Machine always start 4 position
+    }
+
+    callApi();
 };
 
 // Events

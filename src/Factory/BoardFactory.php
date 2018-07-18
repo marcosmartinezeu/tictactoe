@@ -14,18 +14,19 @@ class BoardFactory
      */
     public static function createBoardFromRequestContent($content)
     {
-        $body = json_decode($content);
-        $board = new Board(MoveFactory::loadMovesFromHistory($body->history), $body->matchId);
+        $board = new Board(MoveFactory::loadMovesFromHistory($content->history), $content->matchId);
 
         return $board;
     }
 
     /**
+     *
+     * @param string $id
      * @return Board
      */
-    public static function createNewBoard()
+    public static function createNewBoard($id)
     {
-        $board = new Board([], md5(uniqid()));
+        $board = new Board([], $id);
 
         return $board;
     }
