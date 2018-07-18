@@ -17,6 +17,20 @@ table tr td:last-child {
     border-right: none;
 }
 
-#result-container {
+#message-container {
     background: #c3c3c3;
+    margin-top: 22px;
+    padding: 15px 20px;
+    border-radius: 5px;
+}
+
+#message-container button {
+    text-transform: uppercase;
+}
+#message-container #message-title {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+#message-container #message-text {
+    text-transform: capitalize;
 }

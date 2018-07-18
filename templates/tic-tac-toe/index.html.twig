@@ -23,12 +23,15 @@
             </table>
         </div>
     </div>
-
-    <div id="result-container" class="row hide">
-        <div class="col-md-4">
-            <h2>Game over</h2>
-            <div id="result"></div>
-            <div id="winner" class="hide"></div>
+    <div id="message-container" class="hide">
+        <div class="row">
+            <div class="col-md-8">
+                <div id="message-title"></div>
+                <div id="message-text"></div>
+            </div>
+            <div class="col-md-4">
+                <button id="reset-btn" type="button" class="btn btn-action pull-right"><i class="fas fa-sync"></i> play again</button>
+            </div>
         </div>
     </div>
 {% endblock %}

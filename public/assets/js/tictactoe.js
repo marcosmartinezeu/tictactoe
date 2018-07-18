@@ -2,7 +2,7 @@ var boardState = [];
 var moveHistory = [];
 var nextMove = {};
 var isFinished = false;
-var result = false;
+var gameResult = false;
 var winner = '';
 
 var callApi = function () {
@@ -15,7 +15,7 @@ var callApi = function () {
             boardState: boardState,
             nextMove: nextMove,
             history: moveHistory,
-            result: result,
+            gameResult: gameResult,
             winner: winner,
             isFinished: isFinished
         }),
@@ -23,7 +23,13 @@ var callApi = function () {
         contentType: 'application/json'
     }).done(function (data) {
         // Check matchId
+        if (data.matchId != $('table').attr('id')) {
+            // Error
+            isFinished = true;
+            gameResult = 'error';
+            showMessage('Error', 'Server error: matchId different')
 
+        }
         // loadInfoFromResponse
         loadInfoFromResponse(data);
 
@@ -46,21 +52,16 @@ var renderTable = function(){
     });
 
     if (isFinished == true) {
-        $('#result-container').removeClass('hide');
-        $('#result').html(result);
+        var result = gameResult;
         if (result != 'tie') {
-            $('#winner').removeClass('hide');
             if (winner == 'o') {
-                $('#winner').html('HUMAN')
+                result = 'You win!'
             }
-
             if (winner == 'x') {
-                $('#winner').html('MACHINE')
+                result = 'You lose!'
             }
-
-
         }
-
+        showMessage('Game Over', result);
     }
 };
 var updateTable = function() {
@@ -74,7 +75,7 @@ var loadInfoFromResponse = function(response) {
     moveHistory = response.history;
     nextMove = {};
     isFinished = response.isFinished;
-    result = response.result;
+    gameResult = response.gameResult;
     winner = response.winner;
     updateTable();
 };
@@ -108,6 +109,13 @@ var updateHistoryResponse =  function() {
     });
 };
 
+var showMessage = function(title, text) {
+    $('#message-container').removeClass('hide');
+    $('#message-title').html(title);
+    $('#message-text').html(text);
+};
+
+// Init
 var init = function() {
     initEvents();
     renderTable();
@@ -115,17 +123,42 @@ var init = function() {
     updateHistoryResponse();
 };
 
+// Events
 var initEvents = function () {
     $("td").on("click", clickBoard);
+    $("#reset-btn").on("click", resetBoard);
 };
 
 var clickBoard = function() {
-    if (isFinished === false) {
+    if (isFinished === false && $(this).data('value') != 'o' && $(this).data('value') != 'x') {
         $(this).html("<i class='far fa-circle fa-5x'></i>");
         $(this).data("value", "o");
         setNextMove($(this).data('value'), $(this).data('position'));
         callApi();
     }
+};
+
+var resetBoard = function () {
+
+    // Reset vars
+    boardState = [];
+    moveHistory = [];
+    nextMove = {};
+    isFinished = false;
+    gameResult = false;
+    winner = '';
+
+    // Reset table
+    $("td").each(function () {
+        $(this).data('value', '');
+        $(this).html('');
+    });
+    renderTable();
+
+    // Hide message
+    $('#message-container').addClass('hide');
+    $('#message-title').html('');
+    $('#message-text').html('');
 };
 
 $(document).ready(function(){
