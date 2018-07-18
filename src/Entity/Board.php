@@ -255,14 +255,17 @@ class Board
         if ($this->getPossibleMoves() === 0)
         {
             $result = self:: RESULT_TIE;
+            $this->setFinished(true);
         }
         elseif (!is_null($this->getWinner()))
         {
             $result = self::RESULT_WIN;
+            $this->setFinished(true);
         }
         else
         {
             $result = false;
+            $this->setFinished(false);
         }
         return $result;
     }
