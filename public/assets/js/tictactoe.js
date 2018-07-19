@@ -7,6 +7,7 @@ var winner = '';
 
 var callApi = function () {
     var request = {};
+
     if (moveHistory.length > 0 || jQuery.isEmptyObject(nextMove) === false)
     {
         request = {
@@ -142,7 +143,9 @@ var init = function() {
     updateHistoryResponse();
     if ((Math.floor(Math.random() * 2) + 1) == 1)
     {
-        makeMove('x', 4); // Machine always start 4 position
+        var randomPos = ((Math.floor(Math.random() * 9) + 1) -1);
+        makeMove('x', randomPos);
+        updateTable();
     }
 
     callApi();
