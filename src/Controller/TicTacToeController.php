@@ -4,13 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Board;
 use App\Entity\Move;
-use App\Exception\PayloadNotValidException;
 use App\Factory\BoardFactory;
 use App\Factory\MoveFactory;
 use App\Service\MoveService;
-use App\Validator\MatchFinishedValidator;
-use App\Validator\MatchIdValidator;
-use App\Validator\MoveValidator;
 use App\Validator\PayloadValidator;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
@@ -49,6 +45,7 @@ class TicTacToeController extends Controller
         // Payload validation
         $payloadValidator = new PayloadValidator();
         $payloadValidator->validate($request->getContent());
+
         $content = json_decode($request->getContent());
         $session = new Session();
 
@@ -71,27 +68,6 @@ class TicTacToeController extends Controller
         }
 
         return $this->buildResponse($board);
-    }
-
-    /**
-     * @param mixed $payload
-     * @param Board $board
-     */
-    private function moveValidation($payload, Board $board)
-    {
-        // Move validation
-        if (isset($content->nextMove)) {
-            $moveValidator = new MoveValidator();
-            $moveValidator->validate($payload->nextMove, $board);
-        }
-        // MatchId Validation
-        $matchIdValidator = new MatchIdValidator();
-        $matchIdValidator->validate($payload->matchId);
-
-        // Match Finished Validation
-        $matchFinishedValidator = new MatchFinishedValidator();
-        $matchFinishedValidator->validate($payload, $board);
-
     }
 
     /**

@@ -2,6 +2,12 @@
 
 namespace App\Entity;
 
+use App\Exception\MatchFinishedException;
+use App\Exception\MatchIdNotValidException;
+use App\Exception\MoveNotValidException;
+use App\Validator\MatchIdValidator;
+use App\Validator\MoveValidator;
+
 /**
  * Class Board
  * @package App\Entity
@@ -16,7 +22,7 @@ class Board
     /**
      * @var  Move[]
      */
-    private $moves;
+    private $moves = [];
 
     /**
      * @var bool
@@ -35,8 +41,8 @@ class Board
      */
     public function __construct(Array $moves, string $id)
     {
-        $this->moves = $moves;
-        $this->id = $id;
+        $this->setMoves($moves);
+        $this->setId($id);
     }
 
     /**
@@ -67,7 +73,10 @@ class Board
      */
     public function setMoves(array $moves): Board
     {
-        $this->moves = $moves;
+        foreach($moves as $move)
+        {
+            $this->addMove($move);
+        }
 
         return $this;
     }
@@ -78,7 +87,21 @@ class Board
      */
     public function addMove(Move $move) : Board
     {
-        $this->moves[] = $move;
+        if ($this->getResult() === false) {
+            // Move validation
+            $moveValidator = new MoveValidator();
+            if ($moveValidator->isValid($move, $this)) {
+                $this->moves[] = $move;
+            }
+            else {
+                throw new MoveNotValidException('Not valid move', 400);
+            }
+        }
+        else {
+            throw new MatchFinishedException('Match has finished', 400);
+        }
+
+
         return $this;
     }
 
@@ -117,7 +140,15 @@ class Board
      */
     public function setId(string $id) : Board
     {
-        $this->id = $id;
+        $matchIdValidator = new MatchIdValidator();
+        if ($matchIdValidator->isValid($id))
+        {
+            $this->id = $id;
+        }
+        else
+        {
+            throw new MatchIdNotValidException('Not valid matchId', 400);
+        }
 
         return $this;
     }
