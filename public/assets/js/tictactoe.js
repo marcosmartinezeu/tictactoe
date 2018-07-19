@@ -23,21 +23,16 @@ var callApi = function () {
         }
     }
 
-    // Block click events while POST
-
-
     $.ajax({
         url: 'play',
         method: 'POST',
         data: JSON.stringify(request),
         processData: false,
-        contentType: 'application/json'
-    }).done(function (data) {
-        if (data.error == true) {
-
-        }
-        else
-        {
+        contentType: 'application/json',
+        beforeSend: function () {
+            $('td').unbind('click');
+        },
+        success: function(data) {
             // Check matchId
             if(data.matchId != $('table').attr('id'))
             {
@@ -49,8 +44,15 @@ var callApi = function () {
             // loadInfoFromResponse
             loadInfoFromResponse(data);
             updateTable();
+        },
+        error: function (data) {
+            showMessage('Error', data.responseJSON.message);
+        },
+        complete: function(){
+            $('td').bind('click');
+            initEvents();
         }
-        initEvents();
+
     });
 };
 
