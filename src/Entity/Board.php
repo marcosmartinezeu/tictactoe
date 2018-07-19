@@ -151,6 +151,8 @@ class Board
     }
 
     /**
+     * @param string $player
+     *
      * @return array
      */
     public function getMovesFromPlayer($player) : array

@@ -2,17 +2,28 @@
 
 namespace App\Validator;
 
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
+use App\Exception\MatchIdNotValidException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
-class MatchIdValidator extends ConstraintValidator
+class MatchIdValidator
 {
-    public function validate($value, Constraint $constraint)
-    {
-        /* @var $constraint App\Validator\MatchId */
+    /**
+     * @var string
+     */
+    private $message = 'Not valid matchId';
 
-        $this->context->buildViolation($constraint->message)
-            ->setParameter('{{ value }}', $value)
-            ->addViolation();
+    /**
+     * @param string $value
+     * @throws MatchIdNotValidException
+     */
+    public function validate($value)
+    {
+        $session = new Session();
+        if ($value != $session->get('matchId'))
+        {
+            throw new MatchIdNotValidException($this->message, Response::HTTP_BAD_REQUEST);
+        }
     }
+
 }

@@ -4,16 +4,21 @@ namespace App\Controller;
 
 use App\Entity\Board;
 use App\Entity\Move;
+use App\Exception\PayloadNotValidException;
 use App\Factory\BoardFactory;
 use App\Factory\MoveFactory;
 use App\Service\MoveService;
-use App\Validator\RequestValidator;
+use App\Validator\MatchFinishedValidator;
+use App\Validator\MatchIdValidator;
+use App\Validator\MoveValidator;
+use App\Validator\PayloadValidator;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 
 class TicTacToeController extends Controller
 {
@@ -41,8 +46,10 @@ class TicTacToeController extends Controller
      */
     public function move(Request $request) : JsonResponse
     {
+        // Payload validation
+        $payloadValidator = new PayloadValidator();
+        $payloadValidator->validate($request->getContent());
         $content = json_decode($request->getContent());
-        $requestValidator = new RequestValidator();
         $session = new Session();
 
         // Get board
@@ -50,34 +57,49 @@ class TicTacToeController extends Controller
             ? BoardFactory::createBoardFromRequestContent($content)
             : BoardFactory::createNewBoard($session->get('matchId'));
 
-        $nextMove = null;
-
         // Human move
-        if (isset($content->nextMove))
-        {
+        if (isset($content->nextMove)) {
             // Make human move
             $board->addMove(MoveFactory::loadMoveFromRequestContent($content));
 
             // Make BOT move
-            if($board->getResult() === false)
-            {
+            if ($board->getResult() === false) {
                 $moveService = new MoveService($board);
                 $nextMove = $moveService->play(Move::CHAR_COMPUTER_PLAYER);
                 $board->addMove($nextMove);
             }
         }
 
-        return $this->buildResponse($board, $nextMove);
+        return $this->buildResponse($board);
+    }
+
+    /**
+     * @param mixed $payload
+     * @param Board $board
+     */
+    private function moveValidation($payload, Board $board)
+    {
+        // Move validation
+        if (isset($content->nextMove)) {
+            $moveValidator = new MoveValidator();
+            $moveValidator->validate($payload->nextMove, $board);
+        }
+        // MatchId Validation
+        $matchIdValidator = new MatchIdValidator();
+        $matchIdValidator->validate($payload->matchId);
+
+        // Match Finished Validation
+        $matchFinishedValidator = new MatchFinishedValidator();
+        $matchFinishedValidator->validate($payload, $board);
 
     }
 
     /**
      * @param Board $board
-     * @param null|Move $nextMove
      *
      * @return JsonResponse
      */
-    private function buildResponse(Board $board, $nextMove = null) : JsonResponse
+    private function buildResponse(Board $board) : JsonResponse
     {
         $response = [
             'matchId' => $board->getId(),

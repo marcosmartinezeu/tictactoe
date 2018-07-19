@@ -2,11 +2,29 @@
 
 namespace App\Validator;
 
+use App\Entity\Board;
+
 class MoveValidator
 {
-    public function isValid($value): bool
+    private $message = 'Not valid move';
+
+    /**
+     * @param mixed $move
+     * @param Board $board
+     */
+    public function validate($move, Board $board)
     {
-        // TODO: Implement isValid() method.
-        return false;
+
     }
+
+    private function validatePosition()
+    {
+
+    }
+
+    private function validateChar()
+    {
+
+    }
+
 }
