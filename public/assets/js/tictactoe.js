@@ -44,13 +44,14 @@ var callApi = function () {
             // loadInfoFromResponse
             loadInfoFromResponse(data);
             updateTable();
+            $('td').bind('click');
+            initEvents();
         },
         error: function (data) {
             showMessage('Error', data.responseJSON.message);
         },
         complete: function(){
-            $('td').bind('click');
-            initEvents();
+
         }
 
     });
@@ -164,6 +165,7 @@ var clickBoard = function() {
 
 var resetBoard = function () {
 
+    initEvents();
     // Reset vars
     boardState = [];
     moveHistory = [];
