@@ -37,6 +37,6 @@ class MatchTest extends TestCase
         $state = ['o','x','o','o','x','-','x','o','o'];
         $newMove = MoveFactory::create(Move::CHAR_COMPUTER_PLAYER, 5);
         $board = BoardFactory::generateBoardFromState($state)->addMove($newMove);
-        $this->assertEquals('tie', $board->getResult());
+        $this->assertEquals(Board::RESULT_TIE, $board->getResult());
     }
 }
