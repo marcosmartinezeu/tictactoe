@@ -18,10 +18,14 @@ class PayloadValidator
     public function validate($value) : void
     {
         $payload = json_decode($value);
-        if (json_last_error() != JSON_ERROR_NONE
-            || !isset($payload->matchId)
-            || !isset($payload->history)
-            || !isset($payload->boardState)) {
+        if (json_last_error() == JSON_ERROR_NONE) {
+            if ($value != '{}' && (!isset($payload->matchId)
+                || !isset($payload->history)
+                || !isset($payload->boardState))) {
+                throw new PayloadNotValidException($this->message, Response::HTTP_BAD_REQUEST);
+            }
+        }
+        else {
             throw new PayloadNotValidException($this->message, Response::HTTP_BAD_REQUEST);
         }
     }

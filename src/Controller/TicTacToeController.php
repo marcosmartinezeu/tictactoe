@@ -8,6 +8,7 @@ use App\Factory\BoardFactory;
 use App\Factory\MoveFactory;
 use App\Service\MoveService;
 use App\Validator\PayloadValidator;
+use App\Validator\MatchIdValidator;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -44,18 +45,21 @@ class TicTacToeController extends Controller
         $payloadValidator = new PayloadValidator();
         $payloadValidator->validate($request->getContent());
 
-        $content = json_decode($request->getContent());
+        $payload = json_decode($request->getContent());
+
         $session = new Session();
+        $matchIdValidator = new MatchIdValidator();
+        $matchIdValidator->validate($payload->matchId, $session->get('matchId'));
 
         // Get board
-        $board = (isset($content->history))
-            ? BoardFactory::createBoardFromRequestContent($content)
+        $board = (isset($payload->history))
+            ? BoardFactory::createBoardFromRequestContent($payload)
             : BoardFactory::createNewBoard($session->get('matchId'));
 
         // Human move
-        if (isset($content->nextMove)) {
+        if (isset($payload->nextMove)) {
             // Make human move
-            $board->addMove(MoveFactory::loadMoveFromRequestContent($content));
+            $board->addMove(MoveFactory::loadMoveFromRequestContent($payload));
 
             // Make BOT move
             if ($board->getResult() === false) {

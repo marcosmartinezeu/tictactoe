@@ -21,7 +21,9 @@ class MoveValidator
     public function isValid(Move $move, Board $board) : bool
     {
         return ($this->validateChar($move->getChar())
-                && $this->validatePosition($move->getPosition(), $board));
+                && $this->validatePosition($move->getPosition(), $board)
+                && $this->validateNextPlayer($move->getChar(), $board)
+        );
     }
 
     /**
@@ -51,6 +53,20 @@ class MoveValidator
     private function validateChar($char) : bool
     {
         return (in_array($char, [Move::CHAR_COMPUTER_PLAYER, Move::CHAR_HUMAN_PLAYER]));
+    }
+
+    /**
+     * Validate player order
+     *
+     * Example:
+     * x,o,x,.. next: o
+     *
+     * @param string $char
+     * @return bool
+     */
+    private function validateNextPlayer($char, Board $board) : bool
+    {
+        return ($board->getHistory()[count($board->getHistory()) -1] != $char);
     }
 
 }

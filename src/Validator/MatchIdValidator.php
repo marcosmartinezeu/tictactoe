@@ -2,20 +2,22 @@
 
 namespace App\Validator;
 
-use Symfony\Component\HttpFoundation\Session\Session;
+use App\Exception\MatchIdNotValidException;
 
 class MatchIdValidator
 {
     /**
      * Check payload matchId compare with matchId stored in session
      *
-     * @param string $value
-     * @return bool
+     * @param string $matchId
+     * @param string $serverMatchId
      */
-    public function isValid($value) : bool
+    public function validate($matchId, $serverMatchId)
     {
-        $session = new Session();
-        return ($value == $session->get('matchId'));
+        if ($matchId != $serverMatchId)
+        {
+            throw new MatchIdNotValidException('MatchId not valid.');
+        }
     }
 
 }

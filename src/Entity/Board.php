@@ -3,9 +3,7 @@
 namespace App\Entity;
 
 use App\Exception\MatchFinishedException;
-use App\Exception\MatchIdNotValidException;
 use App\Exception\MoveNotValidException;
-use App\Validator\MatchIdValidator;
 use App\Validator\MoveValidator;
 
 /**
@@ -73,11 +71,7 @@ class Board
      */
     public function setMoves(array $moves): Board
     {
-        foreach($moves as $move)
-        {
-            $this->addMove($move);
-        }
-
+        $this->moves = $moves;
         return $this;
     }
 
@@ -140,15 +134,7 @@ class Board
      */
     public function setId(string $id) : Board
     {
-        $matchIdValidator = new MatchIdValidator();
-        if ($matchIdValidator->isValid($id))
-        {
-            $this->id = $id;
-        }
-        else
-        {
-            throw new MatchIdNotValidException('Not valid matchId', 400);
-        }
+        $this->id = $id;
 
         return $this;
     }
@@ -264,7 +250,7 @@ class Board
     /**
      * @return null|string
      */
-    public function getWinner() : string
+    public function getWinner()
     {
         $winner = null;
 
@@ -283,7 +269,7 @@ class Board
     /**
      * @return bool | string
      */
-    public function getResult() : bool
+    public function getResult()
     {
         if (count($this->getPossibleMoves()) === 0)
         {

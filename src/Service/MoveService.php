@@ -84,7 +84,7 @@ class MoveService
      *
      * @return null|Move
      */
-    protected function getWinnerMove($player) : Move
+    protected function getWinnerMove($player)
     {
         $winnerMove = null;
         foreach($this->board->getPossibleMoves() as $position)
