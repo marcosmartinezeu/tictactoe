@@ -1,132 +1,52 @@
-TIC TAC TOE REST API
+TIC TAC TOE
 =====================
 
-This is a Tic Tac Toe game built in PHP 7 with Symfony 4!
+Tic Tac Toe game
 
 # Installation 
 
 ### Requirements
 
 - PHP 7.1
-- Docker Compose (for docker usage)
+- Docker Compose
+- Composer
+- Bower
 
-Clone this repository using HTTPS or SSH
+Clone this repository using SSH
 
 ```bash
-$ git clone git@github.com:renatoaraujo/tic-tac-toe.git
+$ git clone ssh://git@vps161376.ovh.net:8022/mmartinez/tictactoe.git
 ```
 
-Install all the backend dependencies using composer
+Install the backend dependencies using composer
 
 ```bash
 $ composer install
 ```
 
-# Run
-
-### Using Symfony Server
-
-If you are using Symfony server component just run it by command: 
+Install the frontend dependencies using bower
 
 ```bash
-$ bin/console server:run
+$ bower install
 ```
 
-Now just go to `http://localhost:8000` and enjoy!
+# Run
 
 ### Using Docker Compose
 
-If you don't have PHP running in your local machine, user Docker Compose to build this application.
+Use Docker Compose to build this application.
 
 ```bash
 $ docker-compose up --build -d
 ```
+
+Now just to load `http://localhost:7000/api/tic-tac-toe/play`
 
 # Test
 
 To run the tests just access the path of project and run:
 
 ```bash
-$ bin/phpunit
+$ php vendor/bin/simple-phpunit --bootstrap vendor/autoload.php tests
 ```
 
-If you are using docker for application and not running PHP on your local machine please run the following commmands:
-
-```bash
-$ docker exec -it renatoaraujo.tictactoe bin/phpunit
-```
-
-# Usage
-
-```
-POST http://localhost:8000/api/move
-{
-  "playerUnit" : "X",
-  "boardState" : 
-  	[
-      ["X", "O", ""],
-      ["X", "O", "O"],
-      ["",  "",  ""]
-    ]  
-  
-}
-
-Response 200 OK
-{
-    "playerUnit": "X",
-    "boardState": [
-        [
-            "X",
-            "X",
-            "O"
-        ],
-        [
-            "X",
-            "O",
-            "O"
-        ],
-        [
-            "X",
-            "O",
-            "X"
-        ]
-    ],
-    "nextMove": [],
-    "winner": {
-        "unit": "X",
-        "moves": [
-            [
-                0,
-                0
-            ],
-            [
-                0,
-                1
-            ],
-            [
-                0,
-                2
-            ]
-        ]
-    }
-}
-```
-
-Using curl:
-
-```bash
-curl -X POST \
-  http://localhost:8000/api/move \
-  -H 'Cache-Control: no-cache' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "playerUnit" : "X",
-  "boardState" : 
-  	[
-      ["X", "O", ""],
-      ["X", "O", "O"],
-      ["",  "",  ""]
-    ]  
-  
-}'
-```
