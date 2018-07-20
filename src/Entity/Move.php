@@ -22,6 +22,11 @@ class Move
      */
     private $position;
 
+    /**
+     * Move constructor.
+     * @param string $char
+     * @param int $position
+     */
     public function __construct($char, $position)
     {
         $this->char = $char;

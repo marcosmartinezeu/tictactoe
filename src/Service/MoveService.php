@@ -8,6 +8,33 @@ use App\Entity\Board;
 use App\Entity\Move;
 use App\Factory\MoveFactory;
 
+/**
+ * Class MoveService
+ *
+ * Service to generate computer moves.
+ *
+ * Game algorithm rules:
+ * 1. Try to win
+ * 2. Try to avoid opponent victory
+ * 3. Random move
+ *
+ * Examples:
+ *
+ * [x,-,x]
+ * [o,x,o]
+ * [-,o,o]
+ *
+ * Next move (computer, 6) to win
+ *
+ * [o,o,-]
+ * [x,-,-]
+ * [-,-,-]
+ *
+ * Computer cant't win but can avoid opponent victory
+ * Next move (computer, 2)
+ *
+ * @package App\Service
+ */
 class MoveService
 {
     /**

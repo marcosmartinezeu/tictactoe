@@ -11,6 +11,8 @@ class MoveValidator
     private $message = 'Not valid move';
 
     /**
+     * Validate move
+     *
      * @param Move $move
      * @param Board $board
      *
@@ -23,6 +25,10 @@ class MoveValidator
     }
 
     /**
+     * Checks position is valid:
+     * - Board values
+     * - Board possible moves
+     *
      * @param int $position
      * @param Board $board
      *
@@ -34,6 +40,10 @@ class MoveValidator
     }
 
     /**
+     * Checks char
+     *
+     * Human or Computer values
+     *
      * @param string $char
      *
      * @return bool

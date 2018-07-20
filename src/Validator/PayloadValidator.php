@@ -10,13 +10,18 @@ class PayloadValidator
     private $message = 'Not valid payload format';
 
     /**
+     * Checks if payload is a valid json and has minimal information
+     *
      * @param string $value
      * @throws PayloadNotValidException
      */
     public function validate($value)
     {
-        json_decode($value);
-        if (json_last_error() != JSON_ERROR_NONE) {
+        $payload = json_decode($value);
+        if (json_last_error() != JSON_ERROR_NONE
+            || !isset($payload->matchId)
+            || !isset($payload->history)
+            || !isset($payload->boardState)) {
             throw new PayloadNotValidException($this->message, Response::HTTP_BAD_REQUEST);
         }
     }

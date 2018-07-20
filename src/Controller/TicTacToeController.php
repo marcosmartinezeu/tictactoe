@@ -21,11 +21,9 @@ class TicTacToeController extends Controller
     /**
      * @Route("/api/tic-tac-toe/play", methods="GET", name="play")
      *
-     * @param Request $request
-     *
      * @return Response
      */
-    public function index(Request $request)
+    public function index() : Response
     {
         $session = new Session();
         $session->set('matchId', md5(uniqid()));
