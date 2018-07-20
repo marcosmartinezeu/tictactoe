@@ -18,7 +18,7 @@ class MoveTest extends TestCase
 
         $state = ['o','-','o','x','x','x','o','x','o'];
         $newMove = MoveFactory::create(Move::CHAR_HUMAN_PLAYER, 1);
-        $this->generateBoardFromState($state)->addMove($newMove);
+        BoardFactory::generateBoardFromState($state)->addMove($newMove);
     }
 
     public function testMoveNotValidPostion()
@@ -27,7 +27,7 @@ class MoveTest extends TestCase
 
         $state = ['o','-','o','x','-','x','o','x','o'];
         $newMove = MoveFactory::create(Move::CHAR_HUMAN_PLAYER, 11);
-        $this->generateBoardFromState($state)->addMove($newMove);
+        BoardFactory::generateBoardFromState($state)->addMove($newMove);
     }
 
     public function testMoveNotValidChar()
@@ -36,35 +36,15 @@ class MoveTest extends TestCase
 
         $state = ['o','-','o','x','-','x','o','x','o'];
         $newMove = MoveFactory::create('z', 1);
-        $this->generateBoardFromState($state)->addMove($newMove);
+        BoardFactory::generateBoardFromState($state)->addMove($newMove);
     }
 
     public function testMoveValid()
     {
         $state = ['o','-','o','x','-','x','o','x','o'];
         $newMove = MoveFactory::create(Move::CHAR_HUMAN_PLAYER, 1);
-        $board = $this->generateBoardFromState($state)->addMove($newMove);
+        $board = BoardFactory::generateBoardFromState($state)->addMove($newMove);
 
         $this->assertInstanceOf(Board::class, $board);
-    }
-    /**
-     * @param array $state
-     * @return \App\Entity\Board
-     */
-    private function generateBoardFromState(array $state)
-    {
-        /** @var Move[] $moves */
-        $moves = [];
-        foreach ($state as $position => $char)
-        {
-            if ($char != '-') {
-                $moves[] = MoveFactory::create($char, $position);
-            }
-        }
-
-        $board = BoardFactory::createNewBoard(md5(uniqid()));
-        $board->setMoves($moves);
-
-        return $board;
     }
 }
