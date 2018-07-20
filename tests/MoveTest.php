@@ -39,11 +39,46 @@ class MoveTest extends TestCase
         BoardFactory::generateBoardFromState($state)->addMove($newMove);
     }
 
+    public function testNextMoveValid()
+    {
+        $this->expectException(MoveNotValidException::class);
+
+        $history = [
+            MoveFactory::create(Move::CHAR_HUMAN_PLAYER, 4),
+            MoveFactory::create(Move::CHAR_COMPUTER_PLAYER, 5),
+            MoveFactory::create(Move::CHAR_HUMAN_PLAYER, 6)
+            ];
+        // Expected move from computer
+        $newMove = MoveFactory::create(Move::CHAR_HUMAN_PLAYER, 1);
+        BoardFactory::createNewBoard(md5(uniqid()))->setMoves($history)->addMove($newMove);
+    }
+
+
+    public function testMoveInUsedPositionValid()
+    {
+        $this->expectException(MoveNotValidException::class);
+
+        $history = [
+            MoveFactory::create(Move::CHAR_HUMAN_PLAYER, 4),
+            MoveFactory::create(Move::CHAR_COMPUTER_PLAYER, 5),
+            MoveFactory::create(Move::CHAR_HUMAN_PLAYER, 6)
+        ];
+        // Expected move from computer
+        $newMove = MoveFactory::create(Move::CHAR_COMPUTER_PLAYER, 4);
+        BoardFactory::createNewBoard(md5(uniqid()))->setMoves($history)->addMove($newMove);
+    }
+
     public function testMoveValid()
     {
-        $state = ['o','-','o','x','-','x','o','x','o'];
-        $newMove = MoveFactory::create(Move::CHAR_HUMAN_PLAYER, 1);
-        $board = BoardFactory::generateBoardFromState($state)->addMove($newMove);
+        $history = [
+            MoveFactory::create(Move::CHAR_HUMAN_PLAYER, 4),
+            MoveFactory::create(Move::CHAR_COMPUTER_PLAYER, 5),
+            MoveFactory::create(Move::CHAR_HUMAN_PLAYER, 6)
+        ];
+
+        // Expected move from computer
+        $newMove = MoveFactory::create(Move::CHAR_COMPUTER_PLAYER, 1);
+        $board = BoardFactory::createNewBoard(md5(uniqid()))->setMoves($history)->addMove($newMove);
 
         $this->assertInstanceOf(Board::class, $board);
     }
