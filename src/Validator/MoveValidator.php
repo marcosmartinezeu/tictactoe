@@ -62,11 +62,14 @@ class MoveValidator
      * x,o,x,.. next: o
      *
      * @param string $char
+     * @param Board $board
      * @return bool
      */
     private function validateNextPlayer($char, Board $board) : bool
     {
-        return ($board->getHistory()[count($board->getHistory()) -1] != $char);
+        /** @var Move $lastMove */
+        $lastMove  = $board->getHistory()[count($board->getHistory()) -1];
+        return ($lastMove['char'] != $char);
     }
 
 }
