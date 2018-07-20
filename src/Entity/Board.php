@@ -156,7 +156,7 @@ class Board
     /**
      * @return array
      */
-    public function getState()
+    public function getState() : array
     {
         $state = [];
         $moves = $this->getMovesByPostion();
@@ -171,7 +171,7 @@ class Board
     /**
      * @return array
      */
-    public function getHistory()
+    public function getHistory() : array
     {
         $history = [];
         foreach ($this->getMoves() as $move)
@@ -246,7 +246,7 @@ class Board
      *
      * @return bool
      */
-    protected function isPlayerWinner($player)
+    protected function isPlayerWinner($player) : bool
     {
         $isWinner = false;
         $playerMoves = $this->getMovesFromPlayer($player);
@@ -264,7 +264,7 @@ class Board
     /**
      * @return null|string
      */
-    public function getWinner()
+    public function getWinner() : string
     {
         $winner = null;
 
@@ -281,9 +281,9 @@ class Board
     }
 
     /**
-     * @return bool
+     * @return bool | string
      */
-    public function getResult()
+    public function getResult() : bool
     {
         if (count($this->getPossibleMoves()) === 0)
         {

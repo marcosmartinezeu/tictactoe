@@ -45,7 +45,7 @@ class Move
      * @param string $char
      * @return $this
      */
-    public function setChar(string $char)
+    public function setChar(string $char) : Move
     {
         $this->char = $char;
 
@@ -64,7 +64,7 @@ class Move
      * @param int $position
      * @return $this
      */
-    public function setPosition(int $position)
+    public function setPosition(int $position) : Move
     {
         $this->position = $position;
 
@@ -74,7 +74,7 @@ class Move
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray() : array
     {
         return [
             'char' => $this->getChar(),

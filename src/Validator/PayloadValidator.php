@@ -15,7 +15,7 @@ class PayloadValidator
      * @param string $value
      * @throws PayloadNotValidException
      */
-    public function validate($value)
+    public function validate($value) : void
     {
         $payload = json_decode($value);
         if (json_last_error() != JSON_ERROR_NONE

@@ -57,7 +57,7 @@ class MoveService
      *
      * @return Move
      */
-    public function play($player)
+    public function play($player) : Move
     {
         // Can I win?
         $nextMove = $this->getWinnerMove($player);
@@ -84,7 +84,7 @@ class MoveService
      *
      * @return null|Move
      */
-    protected function getWinnerMove($player)
+    protected function getWinnerMove($player) : Move
     {
         $winnerMove = null;
         foreach($this->board->getPossibleMoves() as $position)

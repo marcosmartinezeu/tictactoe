@@ -31,7 +31,7 @@ class MoveFactory
         return $moves;
     }
 
-    public static function loadMoveFromRequestContent($content)
+    public static function loadMoveFromRequestContent($content) : Move
     {
         return new Move($content->nextMove->char, $content->nextMove->position);
     }

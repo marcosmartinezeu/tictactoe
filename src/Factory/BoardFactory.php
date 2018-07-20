@@ -12,7 +12,7 @@ class BoardFactory
      *
      * @return Board
      */
-    public static function createBoardFromRequestContent($content)
+    public static function createBoardFromRequestContent($content) : Board
     {
         $board = new Board(MoveFactory::loadMovesFromHistory($content->history), $content->matchId);
 
@@ -24,7 +24,7 @@ class BoardFactory
      * @param string $id
      * @return Board
      */
-    public static function createNewBoard($id)
+    public static function createNewBoard($id) : Board
     {
         $board = new Board([], $id);
 
